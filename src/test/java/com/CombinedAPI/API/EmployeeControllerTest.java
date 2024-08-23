@@ -180,6 +180,29 @@ public class EmployeeControllerTest {
             System.out.println("Exception occurred");
         }
 
+
+        EmployeeManagerModel emp6 = new EmployeeManagerModel();
+        emp6.setId("1007");
+        emp6.setName("Billy");
+        emp6.setEmail("butcher@example.com");
+        emp6.setDesignation("Associate");
+        emp6.setDepartment("Engineering");
+        emp6.setMobile("2233445566");
+        emp6.setLocation("Los Angeles");
+        emp6.setManagerId("1005");
+        Instant dateOfJoining6 = Instant.parse("2015-11-10T07:30:00.000Z");
+        emp5.setDateOfJoining(dateOfJoining6);
+
+        try {
+            mockMvc.perform(post("/api/newEmployee")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(emp6)))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.message").value("Successfully created."));
+        } catch (Exception e) {
+            System.out.println("Exception occurred");
+        }
+
     }
 
     @Order(2)
@@ -472,12 +495,11 @@ public class EmployeeControllerTest {
         }
     }
 
-   
     @Order(13)
     @Test
     void addEmployeeAsManagerWithInvalidDesignation() {
         EmployeeManagerModel emp1 = new EmployeeManagerModel();
-        emp1.setId("1007");
+        emp1.setId("1008    ");
         emp1.setName("Manu");
         emp1.setEmail("Manu@example.com");
         emp1.setDesignation("Associate");
@@ -525,7 +547,6 @@ public class EmployeeControllerTest {
         }
     }
 
-    
     @Order(15)
     @Test
     void addEmployeeWithValidManagerId() {
@@ -554,183 +575,285 @@ public class EmployeeControllerTest {
 
     @Order(16)
     @Test
-    void getAllEmployees()
-    {
-        try{
+    void getAllEmployees() {
+        try {
             mockMvc.perform(get("/api/employees")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].name").value("John Doe"));
-        }catch (Exception e) {
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].name").value("John Doe"));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(17)
     @Test
-    void getAllEmployeesWithManagerAndExperience()
-    {
-        try{
+    void getAllEmployeesWithManagerAndExperience() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("managerId", "1001")
-            .param("year", "1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value("Successfully fetched"))
-            .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
-            .andExpect(jsonPath("$details[0].department").value("BA"))
-            .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"));
-        }catch (Exception e) {
+                    .param("managerId", "1001")
+                    .param("year", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("Successfully fetched"))
+                    .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
+                    .andExpect(jsonPath("$details[0].department").value("BA"))
+                    .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(18)
     @Test
-    void getAllEmployeesWithInvalidManagerAndExperience()
-    {
-        try{
+    void getAllEmployeesWithInvalidManagerAndExperience() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("managerId", "10010000")
-            .param("year", "1"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Invalid Manager ID"));
-        }catch (Exception e) {
+                    .param("managerId", "10010000")
+                    .param("year", "1"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("Invalid Manager ID"));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(19)
     @Test
-    void getAllEmployeesWithManager()
-    {
-        try{
+    void getAllEmployeesWithManager() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("managerId", "1001"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value("Successfully fetched"))
-            .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
-            .andExpect(jsonPath("$details[0].department").value("BA"))
-            .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"));
-        }catch (Exception e) {
+                    .param("managerId", "1001"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("Successfully fetched"))
+                    .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
+                    .andExpect(jsonPath("$details[0].department").value("BA"))
+                    .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(20)
     @Test
-    void getAllEmployeesWithYears()
-    {
-        try{
+    void getAllEmployeesWithYears() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("year", "1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value("Successfully fetched"))
-            .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
-            .andExpect(jsonPath("$.details[1].accountManager").value("Jane Smith"))
-            .andExpect(jsonPath("$details[0].department").value("BA"))
-            .andExpect(jsonPath("$details[0].department").value("Delivery"))
-            .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"))
-            .andExpect(jsonPath("$.details[1].employeeList").isEmpty());
-        }catch (Exception e) {
+                    .param("year", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("Successfully fetched"))
+                    .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
+                    .andExpect(jsonPath("$.details[1].accountManager").value("Jane Smith"))
+                    .andExpect(jsonPath("$details[0].department").value("BA"))
+                    .andExpect(jsonPath("$details[0].department").value("Delivery"))
+                    .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"))
+                    .andExpect(jsonPath("$.details[1].employeeList").isEmpty());
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(20)
     @Test
-    void getAllEmployeesWithManagerAndYearAsNull()
-    {
-        try{
+    void getAllEmployeesWithManagerAndYearAsNull() {
+        try {
             mockMvc.perform(get("/api/managerWithYear"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value("Successfully fetched"))
-            .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
-            .andExpect(jsonPath("$.details[1].accountManager").value("Jane Smith"))
-            .andExpect(jsonPath("$details[0].department").value("BA"))
-            .andExpect(jsonPath("$details[0].department").value("Delivery"))
-            .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"))
-            .andExpect(jsonPath("$.details[1].employeeList").isEmpty());
-        }catch (Exception e) {
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("Successfully fetched"))
+                    .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
+                    .andExpect(jsonPath("$.details[1].accountManager").value("Jane Smith"))
+                    .andExpect(jsonPath("$details[0].department").value("BA"))
+                    .andExpect(jsonPath("$details[0].department").value("Delivery"))
+                    .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"))
+                    .andExpect(jsonPath("$.details[1].employeeList").isEmpty());
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(21)
     @Test
-    void getAllEmployeesWithNegativeManager()
-    {
-        try{
+    void getAllEmployeesWithNegativeManager() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("managerId", "-1")
-            .param("year", "1"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Manager ID and Minimum Years of Experience must be non-negative."));
-        }catch (Exception e) {
+                    .param("managerId", "-1")
+                    .param("year", "1"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message")
+                            .value("Manager ID and Minimum Years of Experience must be non-negative."));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
-    
     @Order(22)
     @Test
-    void getAllEmployeesWithNegativeYear()
-    {
-        try{
+    void getAllEmployeesWithNegativeYear() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("managerId", "1001")
-            .param("year", "-1"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Manager ID and Minimum Years of Experience must be non-negative."));
-        }catch (Exception e) {
+                    .param("managerId", "1001")
+                    .param("year", "-1"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message")
+                            .value("Manager ID and Minimum Years of Experience must be non-negative."));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(23)
     @Test
-    void getAllEmployeesWithNegativeManagerOnly()
-    {
-        try{
+    void getAllEmployeesWithNegativeManagerOnly() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("managerId", "-1"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Manager ID cannot be negative"));
-        }catch (Exception e) {
+                    .param("managerId", "-1"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("Manager ID cannot be negative"));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(24)
     @Test
-    void getAllEmployeesWithNegativeYearOnly()
-    {
-        try{
+    void getAllEmployeesWithNegativeYearOnly() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("year", "-1"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Minimum Years of Experience must be non-negative."));
-        }catch (Exception e) {
+                    .param("year", "-1"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("Minimum Years of Experience must be non-negative."));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @Order(25)
     @Test
-    void getAllEmployeesWithInvalidManagerOnly()
-    {
-        try{
+    void getAllEmployeesWithInvalidManagerOnly() {
+        try {
             mockMvc.perform(get("/api/managerWithYear")
-            .param("managerId", "10010000"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Invalid Manager ID"));
-        }catch (Exception e) {
+                    .param("managerId", "10010000"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("Invalid Manager ID"));
+        } catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(26)
+    @Test
+    void putEmployeeManagerInvalidManagerId() {
+        try {
+            ManagerChangeRequest managerChangeRequest = new ManagerChangeRequest();
+            managerChangeRequest.setEmployeeId("1006");
+            managerChangeRequest.setManagerId("100");
+            mockMvc.perform(put("/api/newManager")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(managerChangeRequest)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(
+                            jsonPath("$.message").value("Cannot find new Manager with id 100 in the organisation"));
+        } catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+
+
+
+    @Order(27)
+    @Test
+    void putEmployeeManagerButUnderSameManager() {
+        try {
+            ManagerChangeRequest managerChangeRequest = new ManagerChangeRequest();
+            managerChangeRequest.setEmployeeId("1006");
+            managerChangeRequest.setManagerId("1001");
+            mockMvc.perform(put("/api/newManager")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(managerChangeRequest)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message")
+                            .value("Employee is currently working under the manager with id 1001"));
+        } catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(26)
+    @Test
+    void putEmployeeManagerInvalidEmployeeId() {
+        try {
+            ManagerChangeRequest managerChangeRequest = new ManagerChangeRequest();
+            managerChangeRequest.setEmployeeId("106");
+            managerChangeRequest.setManagerId("100");
+            mockMvc.perform(put("/api/newManager")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(managerChangeRequest)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(
+                            jsonPath("$.message").value("Cannot find employee with id 106 in the organisation"));
+        } catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    
+    @Order(29)
+    @Test
+    void putEmployeeManagerAndEmployeeIdValid() {
+        try {
+            ManagerChangeRequest managerChangeRequest = new ManagerChangeRequest();
+            managerChangeRequest.setEmployeeId("1006");
+            managerChangeRequest.setManagerId("1002");
+            mockMvc.perform(put("/api/newManager")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(managerChangeRequest)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message")
+                            .value("Sam Doe's manager has been succesfully changed from John Doe to Jane Smith"));
+        } catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(30)
+    @Test
+    void putEmployeeManagerChangeMangerOfExisitingManager() {
+        try {
+            ManagerChangeRequest managerChangeRequest = new ManagerChangeRequest();
+            managerChangeRequest.setEmployeeId("1001");
+            managerChangeRequest.setManagerId("1002");
+            mockMvc.perform(put("/api/newManager")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(managerChangeRequest)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message")
+                            .value("Employee is already a manager. Cannot assign manager to another manager"));
+        } catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(31)
+    @Test
+    void putEmployeeManagerChangeMangerWhoIsNotAManager() {
+        try {
+            ManagerChangeRequest managerChangeRequest = new ManagerChangeRequest();
+            managerChangeRequest.setEmployeeId("1006");
+            managerChangeRequest.setManagerId("1007");
+            mockMvc.perform(put("/api/newManager")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(managerChangeRequest)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message")
+                            .value("New manager must be a valid manager of the department."));
+        } catch (Exception e) {
             System.out.println("Exception occured");
         }
     }
 
     @AfterAll
     void tearDown() {
-      mongoTemplate.dropCollection("empmanager");
+        mongoTemplate.dropCollection("empmanager");
     }
 }
 /*
