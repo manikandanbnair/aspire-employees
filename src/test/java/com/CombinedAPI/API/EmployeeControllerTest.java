@@ -615,27 +615,122 @@ public class EmployeeControllerTest {
             System.out.println("Exception occured");
         }
     }
+
+    @Order(20)
+    @Test
+    void getAllEmployeesWithYears()
+    {
+        try{
+            mockMvc.perform(get("/api/managerWithYear")
+            .param("year", "1"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("Successfully fetched"))
+            .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
+            .andExpect(jsonPath("$.details[1].accountManager").value("Jane Smith"))
+            .andExpect(jsonPath("$details[0].department").value("BA"))
+            .andExpect(jsonPath("$details[0].department").value("Delivery"))
+            .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"))
+            .andExpect(jsonPath("$.details[1].employeeList").isEmpty());
+        }catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(20)
+    @Test
+    void getAllEmployeesWithManagerAndYearAsNull()
+    {
+        try{
+            mockMvc.perform(get("/api/managerWithYear"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("Successfully fetched"))
+            .andExpect(jsonPath("$.details[0].accountManager").value("John Doe"))
+            .andExpect(jsonPath("$.details[1].accountManager").value("Jane Smith"))
+            .andExpect(jsonPath("$details[0].department").value("BA"))
+            .andExpect(jsonPath("$details[0].department").value("Delivery"))
+            .andExpect(jsonPath("$details[0].employeeList[0].name").value("Sam Doe"))
+            .andExpect(jsonPath("$.details[1].employeeList").isEmpty());
+        }catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(21)
+    @Test
+    void getAllEmployeesWithNegativeManager()
+    {
+        try{
+            mockMvc.perform(get("/api/managerWithYear")
+            .param("managerId", "-1")
+            .param("year", "1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Manager ID and Minimum Years of Experience must be non-negative."));
+        }catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    
+    @Order(22)
+    @Test
+    void getAllEmployeesWithNegativeYear()
+    {
+        try{
+            mockMvc.perform(get("/api/managerWithYear")
+            .param("managerId", "1001")
+            .param("year", "-1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Manager ID and Minimum Years of Experience must be non-negative."));
+        }catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(23)
+    @Test
+    void getAllEmployeesWithNegativeManagerOnly()
+    {
+        try{
+            mockMvc.perform(get("/api/managerWithYear")
+            .param("managerId", "-1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Manager ID cannot be negative"));
+        }catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(24)
+    @Test
+    void getAllEmployeesWithNegativeYearOnly()
+    {
+        try{
+            mockMvc.perform(get("/api/managerWithYear")
+            .param("year", "-1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Minimum Years of Experience must be non-negative."));
+        }catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
+    @Order(25)
+    @Test
+    void getAllEmployeesWithInvalidManagerOnly()
+    {
+        try{
+            mockMvc.perform(get("/api/managerWithYear")
+            .param("managerId", "10010000"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Invalid Manager ID"));
+        }catch (Exception e) {
+            System.out.println("Exception occured");
+        }
+    }
+
     @AfterAll
     void tearDown() {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("department").is("BA"));
-        mongoTemplate.findAllAndRemove(query, EmployeeManagerModel.class);
-
-        query = new Query();
-        query.addCriteria(Criteria.where("department").is("Sales"));
-        mongoTemplate.findAndRemove(query, EmployeeManagerModel.class);
-
-        query = new Query();
-        query.addCriteria(Criteria.where("department").is("QA"));
-        mongoTemplate.findAndRemove(query, EmployeeManagerModel.class);
-
-        query = new Query();
-        query.addCriteria(Criteria.where("department").is("Delivery"));
-        mongoTemplate.findAndRemove(query, EmployeeManagerModel.class);
-
-        query = new Query();
-        query.addCriteria(Criteria.where("department").is("Engineering"));
-        mongoTemplate.findAndRemove(query, EmployeeManagerModel.class);
+      mongoTemplate.dropCollection("empmanager");
     }
 }
 /*
