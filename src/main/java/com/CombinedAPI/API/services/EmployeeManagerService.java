@@ -66,7 +66,7 @@ public class EmployeeManagerService {
            
             if (managerOpt != null) {
                 EmployeeManagerModel manager = managerOpt;
-                if ("0".equals(manager.getManagerId())) {
+            
                     String managerDepartment = manager.getDepartment();
 
                     if ("Account Manager".equalsIgnoreCase(designation)) {
@@ -76,7 +76,7 @@ public class EmployeeManagerService {
                         throw new IllegalArgumentException(
                                 "Employee's department does not match the manager's department.");
                     }
-                  }
+                  
             } else {
                 throw new IllegalArgumentException("Manager with ID " + managerId + " does not exist.");
             }
@@ -172,7 +172,7 @@ public class EmployeeManagerService {
             EmployeeManagerModel managerOpt = employeeManagerRepository.findByExistingManagerId(managerId);
             if (managerOpt != null) {
                 EmployeeManagerModel manager = managerOpt;
-                if ("0".equals(manager.getManagerId())) {
+                
                     List<EmployeeManagerModel> employeeList = employeeManagerRepository.findByManagerId(managerId);
                     List<EmployeeResponseDTO> employees = convertToEmployeeResponseDTO(employeeList);
 
@@ -182,7 +182,7 @@ public class EmployeeManagerService {
                     details.setId(manager.getId());
                     details.setEmployeeList(employees);
                     detailsList.add(details);
-                }
+                
             } else {
                 throw new IllegalArgumentException("Invalid Manager ID");
             }
@@ -240,7 +240,7 @@ public class EmployeeManagerService {
 
         ManagerChangeResponseDTO responseMessage = new ManagerChangeResponseDTO();
 
-        if (employeeOpt != null) {
+        if (employeeOpt.isPresent()) {
             EmployeeManagerModel employee = employeeOpt.get();
 
             String oldManagerId = employee.getManagerId();
@@ -283,10 +283,10 @@ public class EmployeeManagerService {
                 responseMessage.setMessage(name + "'s manager has been succesfully changed from " + oldManagerName
                         + " to " + newManagerName);
             } else {
-                responseMessage.setMessage("Cannot find new Manager with id " + newManagerId + " in the organisation");
+               throw new IllegalArgumentException("Cannot find new Manager with id " + newManagerId + " in the organisation");
             }
         } else {
-            responseMessage.setMessage("Cannot find employee with id " + empId + " in the organisation");
+            throw new IllegalArgumentException("Cannot find employee with id " + empId + " in the organisation");
         }
 
         return responseMessage;
@@ -312,7 +312,7 @@ public class EmployeeManagerService {
             employeeManagerMainRepository.deleteById(id);
             responseMessage.setMessage("Successfully deleted " + name + " from the organization.");
         } else {
-            responseMessage.setMessage("Cannot find employee with ID " + id + " in the organization.");
+           throw new IllegalArgumentException("Cannot find employee with ID " + id + " in the organization.");
 
         }
         return responseMessage;

@@ -5,9 +5,6 @@ public class ManagerChangeResponseDTO {
 
     public ManagerChangeResponseDTO() {}
 
-    public ManagerChangeResponseDTO(String message) {
-        this.message = message;
-    }
 
     public String getMessage() {
         return message;
