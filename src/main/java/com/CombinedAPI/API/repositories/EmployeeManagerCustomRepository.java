@@ -4,7 +4,6 @@ import org.springframework.stereotype.Repository;
 import com.CombinedAPI.API.model.EmployeeManagerModel;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -23,7 +22,4 @@ public interface EmployeeManagerCustomRepository {
     
     List<EmployeeManagerModel> findByManagerId(String managerId);
     
-    List<EmployeeManagerModel> findByDepartment(String department);
-
-    List<EmployeeManagerModel> findByDateOfJoiningBefore(LocalDate minJoiningDate);
 }

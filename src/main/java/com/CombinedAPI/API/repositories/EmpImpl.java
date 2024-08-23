@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -56,6 +55,7 @@ public class EmpImpl implements EmployeeManagerCustomRepository {
     public EmployeeManagerModel findByExistingManagerId(String managerId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("id").is(managerId));
+        query.addCriteria(Criteria.where("managerId").is("0"));
         return mongoTemplate.findOne(query, EmployeeManagerModel.class);
     }
 
@@ -66,17 +66,5 @@ public class EmpImpl implements EmployeeManagerCustomRepository {
         return mongoTemplate.findOne(query, EmployeeManagerModel.class);
     }
 
-    @Override
-    public List<EmployeeManagerModel> findByDepartment(String department) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("department").is(department));
-        return mongoTemplate.find(query, EmployeeManagerModel.class);
-    }
 
-    @Override
-    public List<EmployeeManagerModel> findByDateOfJoiningBefore(LocalDate minJoiningDate) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("dateOfJoining").lt(minJoiningDate));
-        return mongoTemplate.find(query, EmployeeManagerModel.class);
-    }
 }
