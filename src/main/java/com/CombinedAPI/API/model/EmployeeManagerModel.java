@@ -114,13 +114,6 @@ public class EmployeeManagerModel {
         this.updatedTime = updatedTime;
     }
 
-    @Override
-    public String toString() {
-        return "EmployeeManagerModel [id=" + id + ", name=" + name + ", designation=" + designation + ", email=" + email
-                + ", department=" + department + ", mobile=" + mobile + ", location=" + location + ", managerId="
-                + managerId + ", dateOfJoining=" + dateOfJoining + ", createdTime=" + createdTime + ", updatedTime="
-                + updatedTime + "]";
-    }
 
     
     
