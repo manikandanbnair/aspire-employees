@@ -37,11 +37,9 @@ public class EmployeeManagerController {
 
         ResponseDTO responseDTO = employeeService.managerWithExperience(managerId, minYearsOfExperience);
 
-        if (responseDTO != null) {
+       
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+      
     }
 
     // Add new employee

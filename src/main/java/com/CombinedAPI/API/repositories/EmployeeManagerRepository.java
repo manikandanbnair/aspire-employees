@@ -13,8 +13,7 @@ import com.CombinedAPI.API.model.EmployeeManagerModel;
 public interface EmployeeManagerRepository extends MongoRepository<EmployeeManagerModel, String> {
 
     boolean existsByEmail(String email);
-    // Custom query methods, if any
-
+  
     
 
 
